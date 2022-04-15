@@ -1,5 +1,5 @@
 //jshint esversion:6
-require('dotenv').config();
+require('dotenv').config({path:'.env'});
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -16,24 +16,25 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-let uri = process.env.MONGO_URI;
+const uri = process.env.MONGO_URI
+
 
 // mongoose.connect("mongodb://localhost:27017/BlogsDB", {useNewUrlParser: true});
 mongoose
   .connect(uri, {useNewUrlParser: true})
   .then(x => {
     console.log(
-      `Connected to Mongo! Database name: ""`
+      `Connected to Mongo! Database name: ${process.env}`
     );
   })
   .catch(err => {
     console.error("Error connecting to mongo", err);
   });
 
-const postSchema = {
+const postSchema = new mongoose.Schema({
   title: String,
   content: String
-};
+});
 
 const Post = mongoose.model("Post", postSchema);
 
